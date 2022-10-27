@@ -70,4 +70,10 @@ public class GamePanel extends JPanel implements ActionListener {
     private void update(double dt) {
 
     }
+
+    // Methods about Game
+
+    public void switchTurn() {
+        onTurn = onTurn == FigureColor.BLACK ? FigureColor.WHITE : FigureColor.BLACK;
+    }
 }

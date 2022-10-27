@@ -45,14 +45,14 @@ public class Figures {
         Figure selectedFigure = null;
 
         for(Figure f : figures) {
-            if(f.isClicked) {
+            if(f.isClicked || f.isSelected) {
                 selectedFigure = f;
-                f.renderAvailablePositions(g, this, tileSize);
+                f.renderAvailablePositions(g, this, tileSize, mouseX, mouseY);
             }
         }
 
         for(Figure f : figures) {
-            if(!f.isClicked) {
+            if(!f.isClicked && !f.isSelected) {
                 f.render(g, tileSize, mouseX, mouseY);
             }
         }
@@ -72,5 +72,21 @@ public class Figures {
         for(Figure f : figures) grid[f.pos.getY()][f.pos.getX()] = f.getColor();
 
         return grid;
+    }
+
+    public void takeFigureIfExists(Position p) {
+        int i = 0, index = -1;
+
+        for(Figure f : figures) {
+            if(f.pos.getX() == p.getX() && f.pos.getY() == p.getY()) {
+                index = i;
+                break;
+            }
+            i++;
+        }
+
+        if(index != -1) {
+            figures.remove(index);
+        }
     }
 }
