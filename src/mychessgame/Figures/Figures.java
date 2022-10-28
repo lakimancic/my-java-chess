@@ -8,9 +8,11 @@ import java.awt.*;
 public class Figures {
     Figure[][] grid;
     Move prevMove;
+    public int moveCounter;
 
     public Figures(Images images) {
         grid = new Figure[8][8];
+        moveCounter = 0;
 
         // // White Figures
         grid[7][0] = new Rook(FigureColor.WHITE, images.wRook, new Position(0, 7));
@@ -37,6 +39,9 @@ public class Figures {
         for(int i=0;i<8;i++) {
             grid[1][i] = new Pawn(FigureColor.BLACK, images.bPawn, new Position(i, 1));
         }
+
+        // Log
+        System.out.println("Game Started!");
     }
 
     public void render(Graphics g, int tileSize, int mouseX, int mouseY) {
@@ -82,17 +87,37 @@ public class Figures {
         return false;
     }
 
-    public void setPreviousMove(Position from, Position to) {
-        prevMove = new Move(from, to);
+    public int numberOfMovesLeft(FigureColor color) {
+        int sum = 0;
+        for(Figure[] fs : grid) {
+            for(Figure f : fs) {
+                if(f != null && f.getColor() == color) sum += f.getAvailablePositions(this).size();
+            }
+        }
+        return sum;
     }
 
-    private class Move {
+    public boolean isCheckmated(FigureColor color) {
+        return isChecked(color) && numberOfMovesLeft(color) == 0;
+    }
+
+    public boolean isStalemated(FigureColor color) {
+        return !isChecked(color) && numberOfMovesLeft(color) == 0;
+    }
+
+    public void setPreviousMove(Position from, Position to, FigureType type) {
+        prevMove = new Move(from, to, type);
+    }
+
+    public class Move {
         public Position from;
         public Position to;
+        public FigureType type;
 
-        public Move(Position from, Position to) {
+        public Move(Position from, Position to, FigureType type) {
             this.from = from;
             this.to = to;
+            this.type = type;
         }
 
         public void render(Graphics g, int tileSize) {

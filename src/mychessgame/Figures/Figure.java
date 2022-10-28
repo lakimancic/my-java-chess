@@ -63,11 +63,25 @@ public abstract class Figure {
             }
             else {
                 if(grid[p.getY()][p.getX()] == null) {
-                    g.fillArc(
-                        tileSize * p.getX() + tileSize / 2 - R,
-                        tileSize * p.getY() + tileSize / 2 - R,
-                        2 * R, 2 * R, 0, 360
-                    );
+                    // En Passant
+                    if(
+                        type == FigureType.PAWN && figures.prevMove != null && p.getX() == figures.prevMove.from.getX() &&
+                        Math.abs(figures.prevMove.from.getY() - figures.prevMove.to.getY()) == 2 && pos.getY() == figures.prevMove.to.getY()
+                    ) {
+                        double coef = 0.6;
+                        Area fillArea = new Area(new Rectangle(tileSize * p.getX(), tileSize * p.getY(), tileSize, tileSize));
+                        fillArea.subtract(new Area(
+                            new RoundRectangle2D.Double(tileSize * p.getX(), tileSize * p.getY(), tileSize, tileSize, tileSize * coef, tileSize * coef)
+                        ));
+                        g2d.fill(fillArea);
+                    }
+                    else {
+                        g.fillArc(
+                            tileSize * p.getX() + tileSize / 2 - R,
+                            tileSize * p.getY() + tileSize / 2 - R,
+                            2 * R, 2 * R, 0, 360
+                        );
+                    }
                 }
                 else {
                     double coef = 0.6;
@@ -83,10 +97,18 @@ public abstract class Figure {
 
     public void move(Position newPos, Figures figures) {        
         Figure[][] grid = figures.getGrid();
+
+        String logInfo = getSymbolOfType(type);
+
+        if(grid[newPos.getY()][newPos.getX()] != null) {
+            if(type == FigureType.PAWN) logInfo += (char)(95 + pos.getX());
+            logInfo += "x";
+        }
+        logInfo += (char)(95 + newPos.getX());
+        logInfo += (8 - newPos.getY());
+
         grid[newPos.getY()][newPos.getX()] = this;
         grid[pos.getY()][pos.getX()] = null;
-
-        figures.setPreviousMove(pos, newPos);
 
         // Small Castle
         if(type == FigureType.KING && newPos.x - pos.x == 2) {
@@ -94,6 +116,8 @@ public abstract class Figure {
             grid[pos.getY()][pos.getX()+3] = null;
             grid[newPos.getY()][newPos.getX()-1].isMoved = true;
             grid[newPos.getY()][newPos.getX()-1].pos.setPosition(newPos.getX()-1, newPos.getY());
+
+            logInfo = "O-O";
         }
 
         // Big Castle
@@ -102,11 +126,48 @@ public abstract class Figure {
             grid[pos.getY()][pos.getX()-4] = null;
             grid[newPos.getY()][newPos.getX()+1].isMoved = true;
             grid[newPos.getY()][newPos.getX()+1].pos.setPosition(newPos.getX()+1, newPos.getY());
+
+            logInfo = "O-O-O";
         }
 
-        pos = newPos;
+        // En Passant
+        if(
+            type == FigureType.PAWN && figures.prevMove != null && newPos.getX() == figures.prevMove.from.getX() &&
+            Math.abs(figures.prevMove.from.getY() - figures.prevMove.to.getY()) == 2 && pos.getY() == figures.prevMove.to.getY()
+        ) {
+            grid[figures.prevMove.to.getY()][figures.prevMove.to.getX()] = null;
 
+            logInfo += "(ep)";
+        }
+
+        figures.setPreviousMove(pos, newPos, type);
+        pos = newPos;
         isMoved = true;
+
+        if(figures.isCheckmated(color == FigureColor.WHITE ? FigureColor.BLACK : FigureColor.WHITE)) {
+            logInfo += "#";
+
+            System.out.println(logInfo);
+            System.out.println("Game over! Winner is: " + (color == FigureColor.WHITE ? "WHITE" : "BLACK"));
+        }
+        else if(figures.isStalemated(color == FigureColor.WHITE ? FigureColor.BLACK : FigureColor.WHITE)) {
+            logInfo += "$";
+
+            System.out.println(logInfo);
+            System.out.println("Game over! Stalemate!");
+        }
+        else {
+            if(figures.isChecked(color == FigureColor.WHITE ? FigureColor.BLACK : FigureColor.WHITE)) logInfo += "+";
+
+            if(color == FigureColor.WHITE) {
+                System.out.print((figures.moveCounter / 2 + 1) + ".\t" + logInfo + "\t");
+            }
+            else {
+                System.out.println(logInfo);
+            }
+        }
+
+        figures.moveCounter++;
     }
     
     public boolean isValidMove(Position newPos, Figures figures) {
@@ -135,4 +196,15 @@ public abstract class Figure {
         return pos;
     }
 
+    private static String getSymbolOfType(FigureType type) {
+        switch(type) {
+            case PAWN: return "";
+            case KING: return "K";
+            case QUEEN: return "Q";
+            case KNIGHT: return "N";
+            case ROOK: return "R";
+            case BISHOP: return "B";
+            default: return "";
+        }
+    }
 }

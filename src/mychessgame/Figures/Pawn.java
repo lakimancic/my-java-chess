@@ -42,6 +42,15 @@ public class Pawn extends Figure {
             if(isValidMove(temp, figures)) moves.add(temp);
         }
 
+        // En Passant
+        if(
+            figures.prevMove != null && figures.prevMove.type == FigureType.PAWN && Math.abs(figures.prevMove.from.getY() - figures.prevMove.to.getY()) == 2 &&
+            Math.abs(figures.prevMove.from.getX() - pos.getX()) == 1 && pos.getY() == figures.prevMove.to.getY()
+        ) {
+            temp = new Position(figures.prevMove.from.getX(), pos.y + k);
+            if(isValidMove(temp, figures)) moves.add(temp);
+        }
+
         return moves;
     }
 }
