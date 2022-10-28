@@ -50,22 +50,23 @@ public class Mouse extends MouseAdapter {
         int tileX = e.getX() / tileSize;
         int tileY = e.getY() / tileSize;
 
-        for(Figure f : panel.figures.getFiguresList()) {
-            if(f.pos.getX() == tileX && f.pos.getY() == tileY && f.getColor() == panel.onTurn) {
-                if(selectedFigure != f && selectedFigure != null) {
-                    selectedFigure.isSelected = false;
-                }
+        Figure[][] grid = panel.figures.getGrid();
+        Figure tileFigure = grid[tileY][tileX];
 
-                f.isClicked = true;
-                f.isSelected = !f.isSelected;
-                selectedFigure = f;
-
-                panel.mouseX = e.getX();
-                panel.mouseY = e.getY();
-
-                prevX = e.getX();
-                prevY = e.getY();
+        if(tileFigure != null && tileFigure.getColor() == panel.onTurn) {
+            if(selectedFigure != tileFigure && selectedFigure != null) {
+                selectedFigure.isSelected = false;
             }
+
+            tileFigure.isClicked = true;
+            tileFigure.isSelected = !tileFigure.isSelected;
+            selectedFigure = tileFigure;
+
+            panel.mouseX = e.getX();
+            panel.mouseY = e.getY();
+
+            prevX = e.getX();
+            prevY = e.getY();
         }
     }
 
@@ -81,10 +82,8 @@ public class Mouse extends MouseAdapter {
             List<Position> moves = selectedFigure.getAvailablePositions(panel.figures);
 
             for(Position p : moves) {
-                if(p.getX() == tileX && p.getY() == tileY) {
-                    panel.figures.takeFigureIfExists(p);
-
-                    selectedFigure.move(p);
+                if(p.getX() == tileX && p.getY() == tileY && selectedFigure.getColor() == panel.onTurn) {
+                    selectedFigure.move(p, panel.figures);
                     selectedFigure.isSelected = false;
 
                     panel.switchTurn();

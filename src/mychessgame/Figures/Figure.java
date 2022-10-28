@@ -22,23 +22,31 @@ public abstract class Figure {
 
     public abstract List<Position> getAvailablePositions(Figures figures);
 
-    public void render(Graphics g, int tileSize, int mouseX, int mouseY) {
+    public void render(Graphics g, int tileSize, int mouseX, int mouseY, Figures figures) {
         if(isClicked || isSelected) {
             Graphics2D g2d = (Graphics2D)g;
             g.setColor(new Color(20, 86, 30, 128));
             g.fillRect(tileSize * pos.getX(), tileSize * pos.getY(), tileSize, tileSize);
+            if(type == FigureType.KING) {
+                King king = (King)this;
+                king.renderCheck(g, tileSize, figures);
+            }
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, isClicked ? 0.3f : 1.f));
             g.drawImage(image, tileSize * pos.getX(), tileSize * pos.getY(), tileSize, tileSize, null);
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
             if(isClicked) g.drawImage(image, mouseX - tileSize / 2, mouseY - tileSize / 2, tileSize, tileSize, null);
         } else {
+            if(type == FigureType.KING) {
+                King king = (King)this;
+                king.renderCheck(g, tileSize, figures);
+            }
             g.drawImage(image, tileSize * pos.getX(), tileSize * pos.getY(), tileSize, tileSize, null);
         }
     }
 
     public void renderAvailablePositions(Graphics g, Figures figures, int tileSize, int mouseX, int mouseY) {
         List<Position> moves = getAvailablePositions(figures);
-        FigureColor[][] grid = figures.getGrid();
+        Figure[][] grid = figures.getGrid();
 
         Graphics2D g2d = (Graphics2D)g;
 
@@ -60,7 +68,7 @@ public abstract class Figure {
                         tileSize * p.getY() + tileSize / 2 - R,
                         2 * R, 2 * R, 0, 360
                     );
-                } 
+                }
                 else {
                     double coef = 0.6;
                     Area fillArea = new Area(new Rectangle(tileSize * p.getX(), tileSize * p.getY(), tileSize, tileSize));
@@ -73,10 +81,34 @@ public abstract class Figure {
         }
     }
 
-    public void move(Position newPos) {
+    public void move(Position newPos, Figures figures) {        
+        Figure[][] grid = figures.getGrid();
+        grid[newPos.getY()][newPos.getX()] = this;
+        grid[pos.getY()][pos.getX()] = null;
+
+        figures.setPreviousMove(pos, newPos);
+
         pos = newPos;
 
         isMoved = true;
+    }
+    
+    public boolean isValidMove(Position newPos, Figures figures) {
+        Figure[][] grid = figures.getGrid();
+        Figure temp = grid[newPos.getY()][newPos.getX()];
+        grid[newPos.getY()][newPos.getX()] = this;
+        grid[pos.getY()][pos.getX()] = null;
+        Position tempPos = pos;
+        pos = newPos;
+
+        boolean result = !figures.isChecked(color);
+
+        pos = tempPos;
+        grid[newPos.getY()][newPos.getX()] = temp;
+        grid[pos.getY()][pos.getX()] = this;
+
+
+        return result;
     }
 
     public FigureColor getColor() {
@@ -86,4 +118,5 @@ public abstract class Figure {
     public Position getPosition() {
         return pos;
     }
+
 }

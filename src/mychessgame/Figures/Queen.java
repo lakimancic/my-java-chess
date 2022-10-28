@@ -11,7 +11,7 @@ public class Queen extends Figure implements StraightMoves, DiagonalMoves {
     public Queen(FigureColor color, Image image, Position pos) {
         this.color = color;
         this.image = image;
-        this.type = FigureType.PAWN;
+        this.type = FigureType.QUEEN;
         this.pos = pos;
         this.isSelected = false;
     }

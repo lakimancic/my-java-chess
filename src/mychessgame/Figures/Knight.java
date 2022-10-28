@@ -17,8 +17,9 @@ public class Knight extends Figure {
     @Override
     public List<Position> getAvailablePositions(Figures figures) {
         List<Position> moves = new ArrayList<Position>();
+        Position temp = null;
 
-        FigureColor[][] grid = figures.getGrid();
+        Figure[][] grid = figures.getGrid();
 
         for(int i=-2;i<=2;i++) {
             if(i == 0) continue;
@@ -27,9 +28,10 @@ public class Knight extends Figure {
                 if(j == 0 || Math.abs(j) == Math.abs(i)) continue;
                 if(pos.x + i < 0 || pos.x + i >= 8) continue;
                 if(pos.y + j < 0 || pos.y + j >= 8) continue;
-                if(grid[pos.y + j][pos.x + i] == color) continue;
+                if(grid[pos.y + j][pos.x + i] != null && grid[pos.y + j][pos.x + i].getColor() == color) continue;
 
-                moves.add(new Position(pos.x + i, pos.y + j));
+                temp = new Position(pos.x + i, pos.y + j);
+                if(isValidMove(temp, figures)) moves.add(temp);
             }
         }
 
