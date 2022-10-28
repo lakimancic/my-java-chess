@@ -48,8 +48,6 @@ public class GamePanel extends JPanel implements ActionListener {
         super.paintComponent(g);
 
         render(g);
-
-        figures.render(g, WIDTH / 8, mouseX, mouseY);
     }
 
     @Override
@@ -64,6 +62,28 @@ public class GamePanel extends JPanel implements ActionListener {
     // Render Method
     private void render(Graphics g) {
         g.drawImage(images.background, 0, 0, getWidth(), getHeight(), this);
+
+        renderCoords(g);
+        figures.render(g, WIDTH / 8, mouseX, mouseY);
+    }
+
+    private void renderCoords(Graphics g) {
+        Graphics2D g2d = (Graphics2D)g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        int tileSize = WIDTH / 8;
+        g2d.setFont(new Font(Font.SANS_SERIF, Font.BOLD, tileSize / 6));
+        Color[] colors = { new Color(217, 224, 230), new Color(49, 89, 145) };
+        int padding = 2;
+
+        for(int i=0;i<8;i++) {
+            g2d.setColor(colors[i % 2]);
+            g2d.drawString(""+(char)(97 + i), tileSize * i + padding, tileSize * 8 - padding);
+        }
+
+        for(int i=0;i<8;i++) {
+            g2d.setColor(colors[i % 2]);
+            g2d.drawString(""+(8-i), tileSize * 8 - padding - tileSize / 10, tileSize * i + padding + tileSize / 6);
+        }
     }
 
     // Update Method

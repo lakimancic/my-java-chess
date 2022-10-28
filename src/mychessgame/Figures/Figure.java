@@ -88,6 +88,22 @@ public abstract class Figure {
 
         figures.setPreviousMove(pos, newPos);
 
+        // Small Castle
+        if(type == FigureType.KING && newPos.x - pos.x == 2) {
+            grid[newPos.getY()][newPos.getX()-1] = grid[pos.getY()][pos.getX()+3];
+            grid[pos.getY()][pos.getX()+3] = null;
+            grid[newPos.getY()][newPos.getX()-1].isMoved = true;
+            grid[newPos.getY()][newPos.getX()-1].pos.setPosition(newPos.getX()-1, newPos.getY());
+        }
+
+        // Big Castle
+        if(type == FigureType.KING && pos.x - newPos.x == 2) {
+            grid[newPos.getY()][newPos.getX()+1] = grid[pos.getY()][pos.getX()-4];
+            grid[pos.getY()][pos.getX()-4] = null;
+            grid[newPos.getY()][newPos.getX()+1].isMoved = true;
+            grid[newPos.getY()][newPos.getX()+1].pos.setPosition(newPos.getX()+1, newPos.getY());
+        }
+
         pos = newPos;
 
         isMoved = true;

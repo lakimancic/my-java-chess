@@ -49,6 +49,24 @@ public class King extends Figure {
             }
         }
 
+        // Small Castle
+        if(
+            !isMoved && !isUnderCheck(figures) && grid[pos.y][pos.x+1] == null && grid[pos.y][pos.x+2] == null &&
+            grid[pos.y][pos.x+3] != null && grid[pos.y][pos.x+3].type == FigureType.ROOK && !grid[pos.y][pos.x+3].isMoved &&
+            isValidMove(new Position(pos.x+1, pos.y), figures) && isValidMove(new Position(pos.x+2, pos.y), figures)
+        ) {
+            moves.add(new Position(pos.x+2, pos.y));
+        }
+
+        // Big Castle
+        if(
+            !isMoved && !isUnderCheck(figures) && grid[pos.y][pos.x-1] == null && grid[pos.y][pos.x-2] == null && grid[pos.y][pos.x-3] == null &&
+            grid[pos.y][pos.x-4] != null && grid[pos.y][pos.x-4].type == FigureType.ROOK && !grid[pos.y][pos.x-4].isMoved &&
+            isValidMove(new Position(pos.x-1, pos.y), figures) && isValidMove(new Position(pos.x-2, pos.y), figures)
+        ) {
+            moves.add(new Position(pos.x-2, pos.y));
+        }
+
         return moves;
     }
 
