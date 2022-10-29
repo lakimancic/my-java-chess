@@ -1,7 +1,6 @@
 package mychessgame;
 
 import mychessgame.Figures.*;
-import mychessgame.Figures.Figure.FigureColor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +18,6 @@ public class GamePanel extends JPanel implements ActionListener {
     public int mouseX, mouseY;
     Images images;
     public Figures figures;
-    public FigureColor onTurn;
 
     public GamePanel() {
         initGamePanel();
@@ -34,7 +32,6 @@ public class GamePanel extends JPanel implements ActionListener {
         images = new Images();
 
         figures = new Figures(images);
-        onTurn = FigureColor.WHITE;
 
         timer = new Timer(DELAY, this);
         timer.start();
@@ -92,8 +89,4 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     // Methods about Game
-
-    public void switchTurn() {
-        onTurn = onTurn == FigureColor.BLACK ? FigureColor.WHITE : FigureColor.BLACK;
-    }
 }

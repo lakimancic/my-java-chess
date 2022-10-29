@@ -53,4 +53,41 @@ public class Pawn extends Figure {
 
         return moves;
     }
+
+    public void promote(Figures figures, FigureType type) {
+        Figure[][] grid = figures.getGrid();
+        String logInfo = figures.tempLogInfo;
+        figures.tempLogInfo = null;
+
+        grid[pos.getY()][pos.getX()] = Figure.factory(type, color, figures.getPromotionFigureImage(type), pos);
+        figures.isPromotion = false;
+
+        logInfo += "=" + Figure.getSymbolOfType(type);
+
+        if(figures.isCheckmated(color == FigureColor.WHITE ? FigureColor.BLACK : FigureColor.WHITE)) {
+            logInfo += "#";
+
+            System.out.println(logInfo);
+            System.out.println("Game over! Winner is: " + (color == FigureColor.WHITE ? "WHITE" : "BLACK"));
+        }
+        else if(figures.isStalemated(color == FigureColor.WHITE ? FigureColor.BLACK : FigureColor.WHITE)) {
+            logInfo += "$";
+
+            System.out.println(logInfo);
+            System.out.println("Game over! Stalemate!");
+        }
+        else {
+            if(figures.isChecked(color == FigureColor.WHITE ? FigureColor.BLACK : FigureColor.WHITE)) logInfo += "+";
+
+            if(color == FigureColor.WHITE) {
+                System.out.print((figures.moveCounter / 2 + 1) + ".\t" + logInfo + "\t");
+            }
+            else {
+                System.out.println(logInfo);
+            }
+        }
+
+        figures.moveCounter++;
+        figures.switchTurn();
+    }
 }

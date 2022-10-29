@@ -101,10 +101,10 @@ public abstract class Figure {
         String logInfo = getSymbolOfType(type);
 
         if(grid[newPos.getY()][newPos.getX()] != null) {
-            if(type == FigureType.PAWN) logInfo += (char)(95 + pos.getX());
+            if(type == FigureType.PAWN) logInfo += (char)(97 + pos.getX());
             logInfo += "x";
         }
-        logInfo += (char)(95 + newPos.getX());
+        logInfo += (char)(97 + newPos.getX());
         logInfo += (8 - newPos.getY());
 
         grid[newPos.getY()][newPos.getX()] = this;
@@ -143,6 +143,12 @@ public abstract class Figure {
         figures.setPreviousMove(pos, newPos, type);
         pos = newPos;
         isMoved = true;
+
+        if(type == FigureType.PAWN && (newPos.getY() == 7 || newPos.getY() == 0)) {
+            figures.isPromotion = true;
+            figures.tempLogInfo = logInfo;
+            return;
+        }
 
         if(figures.isCheckmated(color == FigureColor.WHITE ? FigureColor.BLACK : FigureColor.WHITE)) {
             logInfo += "#";
@@ -196,7 +202,7 @@ public abstract class Figure {
         return pos;
     }
 
-    private static String getSymbolOfType(FigureType type) {
+    public static String getSymbolOfType(FigureType type) {
         switch(type) {
             case PAWN: return "";
             case KING: return "K";
@@ -205,6 +211,18 @@ public abstract class Figure {
             case ROOK: return "R";
             case BISHOP: return "B";
             default: return "";
+        }
+    }
+
+    public static Figure factory(FigureType type, FigureColor color, Image image, Position pos) {
+        switch(type) {
+            case PAWN: return new Pawn(color, image, pos);
+            case QUEEN: return new Queen(color, image, pos);
+            case KING: return new King(color, image, pos);
+            case KNIGHT: return new Knight(color, image, pos);
+            case BISHOP: return new Bishop(color, image, pos);
+            case ROOK: return new Rook(color, image, pos);
+            default: return null;
         }
     }
 }

@@ -4,15 +4,25 @@ import mychessgame.Figures.Figure.*;
 import mychessgame.Images;
 
 import java.awt.*;
+import java.awt.geom.*;
 
 public class Figures {
     Figure[][] grid;
+    Images images;
     Move prevMove;
     public int moveCounter;
+    public boolean isPromotion;
+    public FigureColor onTurn;
+    public String tempLogInfo;
+
+    public final FigureType[] promotions = { FigureType.QUEEN, FigureType.KNIGHT, FigureType.ROOK, FigureType.BISHOP };
 
     public Figures(Images images) {
         grid = new Figure[8][8];
+        this.images = images;
         moveCounter = 0;
+        onTurn = FigureColor.WHITE;
+        isPromotion = false;
 
         // // White Figures
         grid[7][0] = new Rook(FigureColor.WHITE, images.wRook, new Position(0, 7));
@@ -67,10 +77,18 @@ public class Figures {
         }
 
         if(selectedFigure != null) selectedFigure.render(g, tileSize, mouseX, mouseY, this);
+
+        if(isPromotion) {
+            renderPromotions(g, tileSize, mouseX, mouseY);
+        }
     }
 
     public Figure[][] getGrid() {
         return grid;
+    }
+
+    public void switchTurn() {
+        onTurn = onTurn == FigureColor.BLACK ? FigureColor.WHITE : FigureColor.BLACK;
     }
 
     public boolean isChecked(FigureColor color) {
@@ -107,6 +125,72 @@ public class Figures {
 
     public void setPreviousMove(Position from, Position to, FigureType type) {
         prevMove = new Move(from, to, type);
+    }
+
+    public Move getPreviousMove() {
+        return prevMove;
+    }
+
+    public Image getPromotionFigureImage(FigureType type) {
+        switch(type) {
+            case QUEEN: return onTurn == FigureColor.WHITE ? images.wQueen : images.bQueen;
+            case KNIGHT: return onTurn == FigureColor.WHITE ? images.wKnight : images.bKnight;
+            case ROOK: return onTurn == FigureColor.WHITE ? images.wRook : images.bRook;
+            case BISHOP: return onTurn == FigureColor.WHITE ? images.wBishop : images.bBishop;
+            default: return null;
+        }
+    }
+
+    private void renderPromotions(Graphics g, int tileSize, int mouseX, int mouseY) {
+        g.setColor(new Color(0, 0, 0, 128));
+            g.fillRect(0, 0, tileSize * 8, tileSize * 8);
+
+            if(prevMove != null) {
+                int k = prevMove.to.getY() == 7 ? -1 : 1;
+                int padding = tileSize / 10;
+
+                for(int i=0;i<promotions.length;i++) {
+                    int posX = prevMove.to.getX(), posY = ( prevMove.to.getY() + k * i );
+                    if(
+                        mouseX >= tileSize * posX && mouseX < tileSize * (posX + 1) &&
+                        mouseY >= tileSize * posY && mouseY < tileSize * (posY + 1)
+                    ) {
+                        Point2D center = new Point2D.Float(posX * tileSize + (float)tileSize / 2, posY * tileSize + (float)tileSize / 2);
+                        float radius = (float)tileSize * 1.3f / 2;
+                        float[] dist = { 0f, 1f};
+                        Color[] colors = {
+                            new Color(176, 176, 176), new Color(214, 79, 0)
+                        };
+                        RadialGradientPaint paint = new RadialGradientPaint(center, radius, dist, colors);
+                        Graphics2D g2d = (Graphics2D) g;
+                        g2d.setPaint(paint);
+                        g2d.fillRect(posX * tileSize, posY * tileSize, tileSize, tileSize);
+                        g2d.drawImage(
+                            getPromotionFigureImage(promotions[i]), 
+                            posX * tileSize, posY * tileSize,
+                            tileSize, tileSize, null
+                        );
+                    }
+                    else {
+                        Point2D center = new Point2D.Float(posX * tileSize + (float)tileSize / 2, posY * tileSize + (float)tileSize / 2);
+                        float radius = (float)tileSize * 1.3f / 2;
+                        float[] dist = { 0f, 1.f};
+                        Color[] colors = {
+                            new Color(176, 176, 176), new Color(128, 128, 128)
+                        };
+                        RadialGradientPaint paint = new RadialGradientPaint(center, radius, dist, colors);
+                        Graphics2D g2d = (Graphics2D) g;
+                        g2d.setPaint(paint);
+                        g2d.fillArc(posX * tileSize, posY * tileSize, tileSize, tileSize, 0, 360);
+                        g2d.drawImage(
+                            getPromotionFigureImage(promotions[i]), 
+                            posX * tileSize + padding, 
+                            posY * tileSize + padding,
+                            tileSize - 2*padding, tileSize - 2*padding, null
+                        );
+                    }
+                }
+            }
     }
 
     public class Move {
