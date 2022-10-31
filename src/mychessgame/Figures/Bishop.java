@@ -1,22 +1,20 @@
 package mychessgame.Figures;
 
-import mychessgame.Figures.Moves.DiagonalMoves;
-
-import java.awt.*;
 import java.util.List;
 
-public class Bishop extends Figure implements DiagonalMoves {
+public class Bishop extends Figure {
 
-    public Bishop(FigureColor color, Image image, Position pos) {
+    public Bishop(Board board, FigureColor color, Position pos) {
+        super(board, pos);
+
         this.color = color;
-        this.image = image;
         this.type = FigureType.BISHOP;
-        this.pos = pos;
-        this.isSelected = false;
     }
 
     @Override
-    public List<Position> getAvailablePositions(Figures figures) {
-        return DiagonalMoves.super.getAvailablePositions(figures);
+    public List<Position> getUnfilteredMoves() {
+        List<Position> moves = Moves.getDiagonalMoves(pos, color, board);
+
+        return moves;
     }
 }
