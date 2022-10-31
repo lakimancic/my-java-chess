@@ -1,22 +1,20 @@
 package mychessgame.Figures;
 
-import mychessgame.Figures.Moves.StraightMoves;
-
-import java.awt.*;
 import java.util.List;
 
-public class Rook extends Figure implements StraightMoves {
+public class Rook extends Figure {
 
-    public Rook(FigureColor color, Image image, Position pos) {
+    public Rook(Board board, FigureColor color, Position pos) {
+        super(board, pos);
+
         this.color = color;
-        this.image = image;
         this.type = FigureType.ROOK;
-        this.pos = pos;
-        this.isSelected = false;
     }
 
     @Override
-    public List<Position> getAvailablePositions(Figures figures) {
-        return StraightMoves.super.getAvailablePositions(figures);
+    public List<Position> getUnfilteredMoves() {
+        List<Position> moves = Moves.getStraightMoves(pos, color, board);
+
+        return moves;
     }
 }

@@ -17,7 +17,7 @@ public class GameFrame extends JFrame {
 
     private void initUI() {
         Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-
+        
         pack();
         setResizable(false);
         setLocationRelativeTo(null);

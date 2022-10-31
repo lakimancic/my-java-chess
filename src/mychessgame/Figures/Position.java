@@ -1,5 +1,7 @@
 package mychessgame.Figures;
 
+import java.util.List;
+
 public class Position {
     int x, y;
 
@@ -26,5 +28,16 @@ public class Position {
 
     public int getY() {
         return y;
+    }
+
+    public boolean isTileHovered(int tileSize, int mouseX, int mouseY) {
+        return mouseX >= tileSize * x && mouseX < tileSize * (x + 1) && mouseY >= tileSize * y && mouseY < tileSize * (y + 1);
+    }
+
+    public boolean isInList(List<Position> list) {
+        for(Position p : list) {
+            if(p.x == x && p.y == y) return true;
+        }
+        return false;
     }
 }
