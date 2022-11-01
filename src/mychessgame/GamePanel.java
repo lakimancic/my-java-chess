@@ -2,7 +2,7 @@ package mychessgame;
 
 import javax.swing.*;
 
-import mychessgame.twoplayers.TwoPlayersState;
+import mychessgame.GameState.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -18,7 +18,7 @@ public class GamePanel extends JPanel implements ActionListener {
     public GamePanel() {
         setPreferredSize(new Dimension(GameFrame.WIDTH, GameFrame.HEIGHT));
 
-        state = new TwoPlayersState(this);
+        changeState(StateType.MAINMENU);
 
         lastTime = System.nanoTime();
 
@@ -47,9 +47,15 @@ public class GamePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         double now = System.nanoTime();
-        double deltaTime = (now - lastTime) / 1e6;
+        double deltaTime = (now - lastTime) / 1e9;
         update(deltaTime);
         repaint();
         lastTime = now;
+    }
+
+    public void changeState(StateType newState) {
+        if(state != null) state.removeEventListeners();
+
+        state = GameState.factory(this, newState);
     }
 }

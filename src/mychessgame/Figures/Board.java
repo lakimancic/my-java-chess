@@ -43,6 +43,8 @@ public class Board {
         Figure selectedFigure = null;
         g.drawImage(background, 0, 0, GameFrame.WIDTH, GameFrame.HEIGHT, null);
 
+        renderCoords(g);
+
         if(prevMove != null) prevMove.render(g, tileSize);
 
         for(Figure[] fs : grid) {
@@ -66,6 +68,24 @@ public class Board {
 
         if(isPromotion) {
             renderPromotions(g, tileSize, mouseX, mouseY);
+        }
+    }
+
+    private void renderCoords(Graphics2D g) {
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        int tileSize = GameFrame.WIDTH / 8;
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, tileSize / 6));
+        Color[] colors = { new Color(217, 224, 230), new Color(49, 89, 145) };
+        int padding = 2;
+
+        for(int i=0;i<8;i++) {
+            g.setColor(colors[i % 2]);
+            g.drawString(""+(char)(97 + i), tileSize * i + padding, tileSize * 8 - padding);
+        }
+
+        for(int i=0;i<8;i++) {
+            g.setColor(colors[i % 2]);
+            g.drawString(""+(8-i), tileSize * 8 - padding - tileSize / 10, tileSize * i + padding + tileSize / 6);
         }
     }
 
