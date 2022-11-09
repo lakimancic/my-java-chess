@@ -16,6 +16,7 @@ public class Board {
     private Move prevMove;
 
     public static final FigureType[] PROMOTIONS = { FigureType.QUEEN, FigureType.KNIGHT, FigureType.ROOK, FigureType.BISHOP };
+    private double[] promotionSize = { 0.0, 0.0, 0.0, 0.0, 0.0 };
 
     public Board() {
         grid = new Figure[8][8];
@@ -36,6 +37,21 @@ public class Board {
         grid[color == FigureColor.WHITE ? 7 : 0][3] = new Queen(this, color, new Position(3, color == FigureColor.WHITE ? 7 : 0));
         for(int i=0;i<8;i++) {
             grid[color == FigureColor.WHITE ? 6 : 1][i] = new Pawn(this, color, new Position(i, color == FigureColor.WHITE ? 6 : 1));
+        }
+    }
+
+    public void update(double dt, int tileSize, int mouseX, int mouseY) {
+        if(isPromotion) {
+            int k = prevMove.to.getY() == 7 ? -1 : 1;
+
+            for(int i=0;i<PROMOTIONS.length;i++) {
+                int posX = prevMove.to.getX(), posY = ( prevMove.to.getY() + k * i );
+                int speed = 8;
+                Position tempPos = new Position(posX, posY);
+
+                if(tempPos.isTileHovered(tileSize, mouseX, mouseY)) promotionSize[i] = Math.min(1, promotionSize[i] + dt * speed);
+                else promotionSize[i] = Math.max(0, promotionSize[i] - dt * speed);
+            }
         }
     }
 
@@ -101,45 +117,32 @@ public class Board {
                 int posX = prevMove.to.getX(), posY = ( prevMove.to.getY() + k * i );
                 Position tempPos = new Position(posX, posY);
                 
-                if(tempPos.isTileHovered(tileSize, mouseX, mouseY)) renderHoverPromotion(g, tileSize, mouseX, mouseY, k, padding, tempPos, i);
-                else renderNormalPromotion(g, tileSize, mouseX, mouseY, k, padding, tempPos, i);
+                renderPromotion(g, tileSize, mouseX, mouseY, k, padding, tempPos, i);
             }
         }
     }
 
-    public void renderNormalPromotion(Graphics2D g, int tileSize, int mouseX, int mouseY, int k, int padding, Position pos, int i) {
+    public void renderPromotion(Graphics2D g, int tileSize, int mouseX, int mouseY, int k, int padding, Position pos, int i) {
         Point2D center = new Point2D.Float(pos.getX() * tileSize + (float)tileSize / 2, pos.getY() * tileSize + (float)tileSize / 2);
         float radius = (float)tileSize * 1.3f / 2;
         float[] dist = { 0f, 1.f};
         Color[] colors = {
             new Color(176, 176, 176), new Color(128, 128, 128)
         };
+        if(pos.isTileHovered(tileSize, mouseX, mouseY)) {
+            colors[0] = new Color(176, 176, 176);
+            colors[1] = new Color(214, 79, 0);
+        }
         RadialGradientPaint paint = new RadialGradientPaint(center, radius, dist, colors);
+        padding = (int)(padding * (1 - promotionSize[i]));
         g.setPaint(paint);
-        g.fillArc(pos.getX() * tileSize, pos.getY() * tileSize, tileSize, tileSize, 0, 360);
+        if(pos.isTileHovered(tileSize, mouseX, mouseY)) g.fillRect(pos.getX() * tileSize, pos.getY() * tileSize, tileSize, tileSize);
+        else g.fillArc(pos.getX() * tileSize, pos.getY() * tileSize, tileSize, tileSize, 0, 360);
         g.drawImage(
             figureImages[onTurn.ordinal()][PROMOTIONS[i].ordinal()], 
             pos.getX() * tileSize + padding, 
             pos.getY() * tileSize + padding,
             tileSize - 2*padding, tileSize - 2*padding, null
-        );
-    }
-
-    public void renderHoverPromotion(Graphics2D g, int tileSize, int mouseX, int mouseY, int k, int padding, Position pos, int i) {
-        Point2D center = new Point2D.Float(pos.getX() * tileSize + (float)tileSize / 2, pos.getY() * tileSize + (float)tileSize / 2);
-        float radius = (float)tileSize * 1.3f / 2;
-        float[] dist = { 0f, 1f};
-        Color[] colors = {
-            new Color(176, 176, 176), new Color(214, 79, 0)
-        };
-        RadialGradientPaint paint = new RadialGradientPaint(center, radius, dist, colors);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setPaint(paint);
-        g2d.fillRect(pos.getX() * tileSize, pos.getY() * tileSize, tileSize, tileSize);
-        g2d.drawImage(
-            figureImages[onTurn.ordinal()][PROMOTIONS[i].ordinal()],
-            pos.getX() * tileSize, pos.getY() * tileSize,
-            tileSize, tileSize, null
         );
     }
 

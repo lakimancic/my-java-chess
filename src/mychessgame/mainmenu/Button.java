@@ -59,10 +59,11 @@ public class Button {
     }
 
     public void update(double dt, int mouseX, int mouseY) {
+        float transition = 0.3f;
         if(isHovered(mouseX, mouseY)) {
-            colorIndex = Math.min(colorIndex + dt * 5, 1.0);
+            colorIndex = Math.min(colorIndex + dt * 1 / transition, 1.0);
         } else {
-            colorIndex = Math.max(colorIndex - dt * 5, 0.0);
+            colorIndex = Math.max(colorIndex - dt * 1 / transition, 0.0);
         }
 
         backColor = ColorHelper.getColorTransition(BACK_COLOR, COLOR, colorIndex);

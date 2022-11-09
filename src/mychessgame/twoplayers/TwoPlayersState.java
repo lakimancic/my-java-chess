@@ -30,7 +30,7 @@ public class TwoPlayersState extends GameState {
 
     @Override
     public void update(double dt) {
-        
+        board.update(dt, GameFrame.WIDTH / 8, mouseX, mouseY);
     }
 
     @Override
