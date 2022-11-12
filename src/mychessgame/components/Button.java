@@ -1,4 +1,4 @@
-package mychessgame.mainmenu;
+package mychessgame.components;
 
 import java.awt.*;
 

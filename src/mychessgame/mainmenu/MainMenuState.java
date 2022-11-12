@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import mychessgame.*;
+import mychessgame.components.Button;
 import mychessgame.utils.*;
 
 public class MainMenuState extends GameState {

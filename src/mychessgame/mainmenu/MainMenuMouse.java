@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.util.Map;
 
 import mychessgame.GameState.StateType;
+import mychessgame.components.Button;
 
 public class MainMenuMouse extends MouseAdapter {
     private MainMenuState state;
