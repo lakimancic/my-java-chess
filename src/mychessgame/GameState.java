@@ -4,12 +4,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 import mychessgame.mainmenu.MainMenuState;
+import mychessgame.multiplayer.MultiplayerState;
 import mychessgame.twoplayers.TwoPlayersState;
 
 public abstract class GameState {
     protected GamePanel panel;
 
     protected MouseAdapter mouseAdapter;
+    protected KeyAdapter keyAdapter;
 
     public GameState(GamePanel panel) {
         this.panel = panel;
@@ -18,18 +20,27 @@ public abstract class GameState {
     }
 
     public abstract void render(Graphics2D g);
+
     public abstract void update(double dt);
 
     public abstract void loadResources();
 
     protected void addEventListeners() {
-        panel.addMouseListener(mouseAdapter);
-        panel.addMouseMotionListener(mouseAdapter);
+        if (mouseAdapter != null)
+            panel.addMouseListener(mouseAdapter);
+        if (mouseAdapter != null)
+            panel.addMouseMotionListener(mouseAdapter);
+        if (keyAdapter != null)
+            panel.addKeyListener(keyAdapter);
     }
 
     protected void removeEventListeners() {
-        panel.removeMouseListener(mouseAdapter);
-        panel.removeMouseMotionListener(mouseAdapter);
+        if (mouseAdapter != null)
+            panel.removeMouseListener(mouseAdapter);
+        if (mouseAdapter != null)
+            panel.removeMouseMotionListener(mouseAdapter);
+        if (keyAdapter != null)
+            panel.removeKeyListener(keyAdapter);
     }
 
     public void changeState(StateType type) {
@@ -37,12 +48,17 @@ public abstract class GameState {
     }
 
     public static GameState factory(GamePanel panel, StateType type) {
-        switch(type) {
-            case MAINMENU: return new MainMenuState(panel);
-            case SINGLEPLAYER: return null;
-            case TWOPLAYER: return new TwoPlayersState(panel);
-            case MULTIPLAYER: return null;
-            default: return null;
+        switch (type) {
+            case MAINMENU:
+                return new MainMenuState(panel);
+            case SINGLEPLAYER:
+                return null;
+            case TWOPLAYER:
+                return new TwoPlayersState(panel);
+            case MULTIPLAYER:
+                return new MultiplayerState(panel);
+            default:
+                return null;
         }
     }
 
