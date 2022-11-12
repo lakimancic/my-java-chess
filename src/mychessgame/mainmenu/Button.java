@@ -28,15 +28,15 @@ public class Button {
     }
 
     public void render(Graphics2D g) {
-        int fontSize = 24;
-        int iconSize = (int)(height * 0.6);
-        int iconPadding = (int)(height * 0.2);
+        int fontSize = 20;
+        int iconSize = (int) (height * 0.6);
+        int iconPadding = (int) (height * 0.2);
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, fontSize);
 
         g.setColor(backColor);
         g.fillRoundRect(x - width / 2, y - height / 2, width, height, height, height);
         g.setColor(COLOR);
-        g.setStroke(new BasicStroke(3));
+        g.setStroke(new BasicStroke(2));
         g.drawRoundRect(x - width / 2, y - height / 2, width, height, height, height);
 
         g.setColor(foreColor);
@@ -45,22 +45,24 @@ public class Button {
 
         FontMetrics metrics = g.getFontMetrics(font);
         g.drawString(
-            text, x - (metrics.stringWidth(text) - iconPadding - iconSize) / 2, y + metrics.getHeight() / 4
-        );
+                text, x - (metrics.stringWidth(text) - iconPadding - iconSize) / 2,
+                y + metrics.getHeight() * 11 / 30);
 
         renderIcon(g, x, metrics);
     }
 
     private void renderIcon(Graphics2D g, int x, FontMetrics metrics) {
-        int iconSize = (int)(height * 0.6);
-        int iconPadding = (int)(height * 0.2);
+        int iconSize = (int) (height * 0.6);
+        int iconPadding = (int) (height * 0.2);
 
-        g.drawImage(ColorHelper.getColorizedImage(icon, foreColor, iconSize, iconSize), x - (iconPadding + iconSize + metrics.stringWidth(text)) / 2, y - iconSize / 2, iconSize, iconSize, null);
+        g.drawImage(ColorHelper.getColorizedImage(icon, foreColor, iconSize, iconSize),
+                x - (iconPadding + iconSize + metrics.stringWidth(text)) / 2, y - iconSize / 2, iconSize, iconSize,
+                null);
     }
 
     public void update(double dt, int mouseX, int mouseY) {
         float transition = 0.3f;
-        if(isHovered(mouseX, mouseY)) {
+        if (isHovered(mouseX, mouseY)) {
             colorIndex = Math.min(colorIndex + dt * 1 / transition, 1.0);
         } else {
             colorIndex = Math.max(colorIndex - dt * 1 / transition, 0.0);
@@ -71,22 +73,25 @@ public class Button {
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
-        if(
-            mouseX >= x - width / 2 && mouseX <= x + width / 2 &&
-            mouseY >= y - height / 2 && mouseY <= y + height / 2
-        ) {
-            if(mouseX >= x - width / 2 + height / 2 && mouseX <= x + width / 2 - height / 2) return true;
+        if (mouseX >= x - width / 2 && mouseX <= x + width / 2 &&
+                mouseY >= y - height / 2 && mouseY <= y + height / 2) {
+            if (mouseX >= x - width / 2 + height / 2 && mouseX <= x + width / 2 - height / 2)
+                return true;
 
-            if(mouseX < x) {
+            if (mouseX < x) {
                 double r = Math.sqrt(Math.pow(x - width / 2 + height / 2 - mouseX, 2) + Math.pow(mouseY - y, 2));
                 return r <= height / 2;
             }
-            if(mouseX > x) {
+            if (mouseX > x) {
                 double r = Math.sqrt(Math.pow(x + width / 2 - height / 2 - mouseX, 2) + Math.pow(mouseY - y, 2));
                 return r <= height / 2;
             }
         }
 
         return false;
+    }
+
+    public String getText() {
+        return text;
     }
 }

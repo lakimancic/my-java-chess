@@ -28,8 +28,11 @@ public class MainMenuState extends GameState {
         buttons = new ArrayList<Button>();
 
         buttons.add(
-            new Button(GameFrame.WIDTH / 2, 320, 300, 55, "Two Players", twoPlayerIcon)
-        );
+                new Button(GameFrame.WIDTH / 2, 320, 280, 50, "Singleplayer", twoPlayerIcon));
+        buttons.add(
+                new Button(GameFrame.WIDTH / 2, 400, 280, 50, "Two Players", twoPlayerIcon));
+        buttons.add(
+                new Button(GameFrame.WIDTH / 2, 480, 280, 50, "Multiplayer", twoPlayerIcon));
     }
 
     @Override
@@ -38,7 +41,8 @@ public class MainMenuState extends GameState {
 
         renderVersion(g);
 
-        for(Button b : buttons) b.render(g);
+        for (Button b : buttons)
+            b.render(g);
     }
 
     public void renderVersion(Graphics2D g) {
@@ -48,12 +52,14 @@ public class MainMenuState extends GameState {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, fontSize));
 
-        g.drawString(String.format("%s %d.%d.%d", GameFrame.VERSION_NAME, GameFrame.VERSION_MAJOR, GameFrame.VERSION_MINOR, GameFrame.VERSION_PATCH), padding, GameFrame.HEIGHT - padding);
+        g.drawString(String.format("%s %d.%d.%d", GameFrame.VERSION_NAME, GameFrame.VERSION_MAJOR,
+                GameFrame.VERSION_MINOR, GameFrame.VERSION_PATCH), padding, GameFrame.HEIGHT - padding);
     }
 
     @Override
     public void update(double dt) {
-        for(Button b : buttons) b.update(dt, mouseX, mouseY);
+        for (Button b : buttons)
+            b.update(dt, mouseX, mouseY);
     }
 
     @Override
