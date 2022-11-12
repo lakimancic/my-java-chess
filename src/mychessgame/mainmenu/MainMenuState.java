@@ -29,11 +29,11 @@ public class MainMenuState extends GameState {
         buttons = new ArrayList<Button>();
 
         buttons.add(
-                new Button(GameFrame.WIDTH / 2, 320, 280, 50, "Singleplayer", twoPlayerIcon));
+                new Button(GameFrame.WIDTH / 2, 320, 280, 50, 20, "Singleplayer", twoPlayerIcon));
         buttons.add(
-                new Button(GameFrame.WIDTH / 2, 400, 280, 50, "Two Players", twoPlayerIcon));
+                new Button(GameFrame.WIDTH / 2, 400, 280, 50, 20, "Two Players", twoPlayerIcon));
         buttons.add(
-                new Button(GameFrame.WIDTH / 2, 480, 280, 50, "Multiplayer", twoPlayerIcon));
+                new Button(GameFrame.WIDTH / 2, 480, 280, 50, 20, "Multiplayer", twoPlayerIcon));
     }
 
     @Override

@@ -7,6 +7,7 @@ import mychessgame.utils.ColorHelper;
 public class Button {
     private int x, y;
     private int width, height;
+    private int fontSize;
     private String text;
     private Image icon;
 
@@ -18,17 +19,17 @@ public class Button {
 
     private double colorIndex = 0;
 
-    public Button(int x, int y, int width, int height, String text, Image icon) {
+    public Button(int x, int y, int width, int height, int fontSize, String text, Image icon) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.fontSize = fontSize;
         this.text = text;
         this.icon = icon;
     }
 
     public void render(Graphics2D g) {
-        int fontSize = 20;
         int iconSize = (int) (height * 0.6);
         int iconPadding = (int) (height * 0.2);
         Font font = new Font(Font.SANS_SERIF, Font.BOLD, fontSize);

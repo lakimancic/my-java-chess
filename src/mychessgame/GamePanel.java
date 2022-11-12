@@ -27,18 +27,20 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void render(Graphics2D g) {
-        if(state != null) state.render(g);
+        if (state != null)
+            state.render(g);
     }
 
     private void update(double dt) {
-        if(state != null) state.update(dt);
+        if (state != null)
+            state.update(dt);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Graphics2D g2d = (Graphics2D)g;
+        Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
         render(g2d);
@@ -54,7 +56,8 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void changeState(StateType newState) {
-        if(state != null) state.removeEventListeners();
+        if (state != null)
+            state.removeEventListeners();
 
         state = GameState.factory(this, newState);
     }
