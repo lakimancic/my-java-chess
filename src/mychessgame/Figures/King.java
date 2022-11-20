@@ -47,10 +47,10 @@ public class King extends Figure {
     @Override
     protected boolean isValidMove(Position newPos) {
         if (newPos.getX() - pos.getX() > 1)
-            return super.isValidMove(newPos) && checkKingsideCastle();
+            return checkKingsideCastle() && super.isValidMove(newPos);
 
         if (pos.getX() - newPos.getX() > 1)
-            return super.isValidMove(newPos) && checkQueensideCastle();
+            return checkQueensideCastle() && super.isValidMove(newPos);
 
         return super.isValidMove(newPos);
     }
